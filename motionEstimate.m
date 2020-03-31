@@ -1,7 +1,15 @@
 function posBel = motionEstimate(accFile, gpsFile)
+    % accFile = fullfile('Input','accelerometer_x5m.csv'); gpsFile = fullfile('Input','gps_x5m.csv');
+    % posBel = motionEstimate(accFile,gpsFile);
+    % 
+    % Input
+    %   accFile: path of the accelerometer file
+    %   gpsFile: path of the gps file
+    % Output
+    %   posBel: array of the displacement
+    %   plot: posBel plot
+    
     %% data import
-    % accFile = fullfile('Input','accelerometer.csv');
-    % gpsFile = fullfile('Input','gps.csv');
     acc = csvread(accFile,1);
     gps = csvread(gpsFile,1);
 
