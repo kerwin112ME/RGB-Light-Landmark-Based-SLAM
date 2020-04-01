@@ -24,8 +24,7 @@ classdef ParticleFilterSLAM
 
         function predictParticles(U)
             % 
-            % move all the particles, predict their next states, adding
-            % noise
+            % move all the particles, predict their next states
             %
         end
         
