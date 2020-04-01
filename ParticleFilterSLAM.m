@@ -1,37 +1,53 @@
 classdef ParticleFilterSLAM
     properties
-        motionData;
-        measurementData;
-        numParticles;
-        X = []; % X postions of all particles
-        Y = []; % Y postions of all particles
-        Weight = []; % Weights of all particles
+        numP; % number of particles
+        particles;
         motionVariance;
         measurementVariance;
-        
+        lmP; % landmarks' covariance matrices
+        lm; % landmarks' positions
+
     end
-        
+
     methods
-        function obj = ParticleFilterSLAM(numParticles, varargin)
+        function obj = ParticleFilterSLAM(numP, varargin)
             
+            obj.particles = cell(1,numP);
+            for i = 1:numP
+                %
+                % declare and initialize all particles
+                %
+                
+            end
+
+        end
+
+        function predictParticles(U)
+            % 
+            % move all the particles, predict their next states, adding
+            % noise
+            %
         end
         
-        function updateParticles(U, Z)
-            
+        function updateParticles(Z)
+            %
+            % compute the weight of each particles, and then update the
+            % landmark positions of all particles using EKF.
+            %
         end
-        
+
         function resampling()
-            
+            %
+            % add new particles and throw some particles away
+            %
         end
-        
-        function mapping()
-            
-        end
-        
+
+
     end
-    
-    
+
 end
+
+
         
         
             

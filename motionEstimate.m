@@ -27,7 +27,7 @@ function posBel = motionEstimate(accFile, gpsFile)
     posBel = 0; % position believe
     velBel = 0; % velocity believe
 
-    accVar = 1.5; % acceleromter variance
+    accVar = 1.0; % acceleromter variance
     GPSVar = 0.05; % GPS variance
     for ii = 1:size(acc,1)
         velBel = vertcat(velBel, velBel(end) + acc(ii)*accT);
