@@ -1,11 +1,10 @@
 classdef ParticleFilterSLAM
     properties
+        mapL; % map length
         numP; % number of particles
         particles;
-        motionVariance;
-        measurementVariance;
-        lmP; % landmarks' covariance matrices
-        lm; % landmarks' positions
+        Q; % motion variance
+        R; % measurement variance
 
     end
 
@@ -14,10 +13,8 @@ classdef ParticleFilterSLAM
             
             obj.particles = cell(1,numP);
             for i = 1:numP
-                %
-                % declare and initialize all particles
-                %
-                
+                obj.particles{i} = ...
+                    Particle(mapL*rand, mapL*rand,1./numP, zeros(3,2), zeros(3*2,2);           
             end
 
         end
