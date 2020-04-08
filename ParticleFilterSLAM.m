@@ -10,14 +10,17 @@ classdef ParticleFilterSLAM
     end
 
     methods
-        function obj = ParticleFilterSLAM(numP, lmY)
+        function obj = ParticleFilterSLAM(numP_, mapL_, lmY_)
             
-            obj.particles = cell(1,numP);
+            obj.particles = cell(1,numP_);
+            obj.mapL = mapL_;
+            obj.numP = numP_;
+            obj.lmY = lmY_;
             lmPos = zeros(3,2);
-            lmPos(:,2) = lmY;
-            for i = 1:numP
+            lmPos(:,2) = lmY_;
+            for i = 1:numP_
                 obj.particles{i} = ...
-                    Particle(mapL*rand, mapL*rand,1./numP, lmPos, zeros(3,3));           
+                    Particle(mapL_*rand, mapL_*rand,1./numP_, lmPos, zeros(3,3));           
             end
 
         end
@@ -33,12 +36,12 @@ classdef ParticleFilterSLAM
             for ip = 1:obj.numP
                 % first time observe
                 if abs(obj.particles{ip}.rgbPos(1,1)) < 0.001
-                    obj.particles{ip}.addNewLm(Z, obj.R, obj.lmY);
+                    obj.particles{ip} = obj.particles{ip}.addNewLm(Z, obj.R, obj.lmY);
                 % non first time observe
                 else
                     w = obj.computeWeight(obj.particles{ip}, Z);
                     obj.particles{ip}.w = w;
-                    obj.particles{ip}.updateLandmark(Z, R);
+                    obj.particles{ip} = obj.particles{ip}.updateLandmark(Z, R);
                 end
             end
         end

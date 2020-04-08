@@ -16,11 +16,11 @@ function RunSLAM(Ut, RGBt, NumP)
     
     for t = 1:tspan
         
-        PF.predictParticles(Ut(t));
+        PF = PF.predictParticles(Ut(t));
         
-        PF.updateParticles(RGBt(t));
+        PF = PF.updateParticles(RGBt(t));
         
-        PF.resampling();
+        PF = PF.resampling();
         
         %
         % update the particles plot
