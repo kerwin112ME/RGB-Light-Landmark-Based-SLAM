@@ -6,7 +6,7 @@ classdef Particle
         
         % landmarks
         rgbPos; % landmarks positions, dim:(3,2);  ex: [Rx Ry; Gx Gy; Bx By]
-        rgbCov; % positions' covariance, dim:(3*2,2); 
+        rgbCov; % x positions' covariance, dim:(3,3); 
     end
     
     methods
@@ -14,9 +14,9 @@ classdef Particle
             obj.x = x_;
             obj.y = y_;
             
-            if varargin == 3
+            if nargin == 3
                 obj.w = varargin{1};
-            elseif varargin == 5
+            elseif nargin == 5
                 obj.w = varargin{1};
                 obj.rgbPos = varargin{2};
                 obj.rgbCov = varargin{3};               
@@ -28,5 +28,20 @@ classdef Particle
             obj.y = obj.y + dy;
         end
         
+        function obj = addNewLm(obj, Z, R, lmY)
+            % z: distance between the particle and the lm
+            lmX = obj.x + sqrt(Z.^2 - (lmY-obj.y).^2);
+            obj.rgbPos(:,1) = lmX;
+            obj.rgbCov = diag([1,1,1]);
+            
+        end
+        
+        function obj = updateLandmark(obj, Z)
+            
+        end
+        
     end
 end
+
+
+
