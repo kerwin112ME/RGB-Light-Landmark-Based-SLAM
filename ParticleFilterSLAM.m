@@ -10,14 +10,17 @@ classdef ParticleFilterSLAM
     end
 
     methods
-        function obj = ParticleFilterSLAM(numP_, mapL_, lmY_)
+        function obj = ParticleFilterSLAM(numP_, mapL_, lmY_, Q_, R_)
             
             obj.particles = cell(1,numP_);
             obj.mapL = mapL_;
             obj.numP = numP_;
             obj.lmY = lmY_;
+            obj.Q = Q_;
+            obj.R = R_;
+            
             lmPos = zeros(3,2);
-            lmPos(:,2) = lmY_;
+            lmPos(:,2) = obj.lmY;
             for i = 1:numP_
                 obj.particles{i} = ...
                     Particle(mapL_*rand, mapL_*rand,1./numP_, lmPos, zeros(3,3));           
@@ -32,24 +35,21 @@ classdef ParticleFilterSLAM
         end
         
         function obj = updateParticles(obj, Z)
-            % Z: rgb measurment data (3*t matrix)
+            % Z: rgb measurment data (3*1 matrix)
             for ip = 1:obj.numP
                 % first time observe
                 if abs(obj.particles{ip}.rgbPos(1,1)) < 0.001
-                    obj.particles{ip} = obj.particles{ip}.addNewLm(Z, obj.R, obj.lmY);
+                    obj.particles{ip} = obj.particles{ip}.addNewLm(Z, obj.lmY);
                 % non first time observe
                 else
-                    w = obj.computeWeight(obj.particles{ip}, Z);
-                    obj.particles{ip}.w = w;
-                    obj.particles{ip} = obj.particles{ip}.updateLandmark(Z, R);
+                    w = obj.particles{ip}.computeWeight(Z, obj.R); 
+                    obj.particles{ip}.w = w; % update the particle weight
+                    obj.particles{ip} = obj.particles{ip}.updateLandmark(Z, obj.R); % update the landmark by EKF
                 end
             end
         end
+            
         
-        function w = computeWeight(obj, Z)
-        
-        end
-
         function obj = resampling(obj)
             %
             % add new particles and throw some particles away
