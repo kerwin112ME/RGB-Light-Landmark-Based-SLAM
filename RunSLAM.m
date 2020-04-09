@@ -1,4 +1,4 @@
-function RunSLAM(Ut, RGBt, NumP)
+function RunSLAM(Ut, RGBt, NumP, lmY)
     % Input
     %   Ut: displacements at every time step. Dimension: 2*t
     %       ex, [dx; dy] = [0.1 0.15 0.11 ...; 0.02 0.1 0.08 ...]
@@ -11,9 +11,31 @@ function RunSLAM(Ut, RGBt, NumP)
     % Ouput
     %   dynamic plot of the particles
     
-    tspan = size(Ut,2);
-    PF = ParticleFilterSLAM(NumP); % declare a ParticleFilterSLAM
+    %% initilize
+    Q = zeros(3,3); % lm process noise 
+    R = diag([0.5,0.5,0.5]); % lm measurement noise
+    mapL = 5; % size of the map
+    lmX_hat = [2.2;3.2;2.8]; % initial guess of the landmark x-positions
     
+    tspan = size(Ut,2);
+    PF = ParticleFilterSLAM(NumP, mapL, lmY, Q, R); % declare a ParticleFilterSLAM
+    
+    % initialize the animation plot
+    figure;
+    scatter = zeros(2,NumP); % the x,y positions of all particles
+    for ip = 1:NumP
+        scatter(:,ip) = [PF.particles{ip}.x; PF.particles{ip}.y];
+    end
+    
+    lm_init = [lmX_hat';lmY'];
+    plot(scatter(1,:),scatter(2,:),'.','color','#D95319');
+    hold on;
+    plot(lm_init(1,1),lm_init(2,1),'pentagram','MarkerSize',9,'LineWidth',3,'color','#FF0000') % plot Red Lm
+    plot(lm_init(1,2),lm_init(2,2),'pentagram','MarkerSize',9,'LineWidth',3,'color','#00FF00') % plot Green Lm
+    plot(lm_init(1,3),lm_init(2,3),'pentagram','MarkerSize',9,'LineWidth',3,'color','#0000FF') % plot Blue Lm
+    hold off;
+    
+    %% start the SLAM
     for t = 1:tspan
         
         PF = PF.predictParticles(Ut(t));
@@ -25,6 +47,17 @@ function RunSLAM(Ut, RGBt, NumP)
         %
         % update the particles plot
         %
+        scatter = zeros(2,NumP);
+        for ip = 1:NumP
+            scatter(:,ip) = [PF.particles{ip}.x; PF.particles{ip}.y];
+        end
+        plot(scatter(1,:),scatter(2,:),'.','color','#D95319');
+        
+        hold on
+        plot(lm_init(1,1),lm_init(2,1),'pentagram','MarkerSize',9,'LineWidth',3,'color','#FF0000') % plot Red Lm
+        plot(lm_init(1,2),lm_init(2,2),'pentagram','MarkerSize',9,'LineWidth',3,'color','#00FF00') % plot Green Lm
+        plot(lm_init(1,3),lm_init(2,3),'pentagram','MarkerSize',9,'LineWidth',3,'color','#0000FF') % plot Blue Lm
+        hold off;
         
     end
     
