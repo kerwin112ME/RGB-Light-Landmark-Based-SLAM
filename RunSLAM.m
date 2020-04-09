@@ -1,4 +1,4 @@
-function RunSLAM(Ut, RGBt, NumP, lmY)
+function RunSLAM(Ut, RGBt, numP, lmY)
     % Input
     %   Ut: displacements at every time step. Dimension: 2*t
     %       ex, [dx; dy] = [0.1 0.15 0.11 ...; 0.02 0.1 0.08 ...]
@@ -18,12 +18,12 @@ function RunSLAM(Ut, RGBt, NumP, lmY)
     lmX_hat = [2.2;3.2;2.8]; % initial guess of the landmark x-positions
     
     tspan = size(Ut,2);
-    PF = ParticleFilterSLAM(NumP, mapL, lmY, Q, R); % declare a ParticleFilterSLAM
+    PF = ParticleFilterSLAM(numP, mapL, lmY, Q, R); % declare a ParticleFilterSLAM
     
     % initialize the animation plot
     figure;
-    scatter = zeros(2,NumP); % the x,y positions of all particles
-    for ip = 1:NumP
+    scatter = zeros(2,numP); % the x,y positions of all particles
+    for ip = 1:numP
         scatter(:,ip) = [PF.particles{ip}.x; PF.particles{ip}.y];
     end
     
@@ -47,8 +47,8 @@ function RunSLAM(Ut, RGBt, NumP, lmY)
         %
         % update the particles plot
         %
-        scatter = zeros(2,NumP);
-        for ip = 1:NumP
+        scatter = zeros(2,PF.numP);
+        for ip = 1:PF.numP
             scatter(:,ip) = [PF.particles{ip}.x; PF.particles{ip}.y];
         end
         plot(scatter(1,:),scatter(2,:),'.','color','#D95319');
