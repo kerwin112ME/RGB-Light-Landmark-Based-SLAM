@@ -14,7 +14,7 @@ function PF = RunSLAM(Ut, RGBt, numP, lmY)
     
     %% initilize
     Q = zeros(3,3); % lm process noise 
-    R = diag([0.5,0.5,0.5]); % lm measurement noise
+    R = diag([0.25,0.25,0.25]); % lm measurement noise
 
     mapL = 6; % size of the map
     lmX_hat = [2.2;3.0;3.8]; % initial guess of the landmark x-positions
@@ -51,10 +51,6 @@ function PF = RunSLAM(Ut, RGBt, numP, lmY)
         
 
         % update the particles plot
-
-        %
-        % update the particles plot
-        %
 
         [est_x, est_y] = PF.computeLocation();
         plot(est_x,est_y,'o', 'color', '#FF00FF');
