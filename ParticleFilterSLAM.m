@@ -43,6 +43,8 @@ classdef ParticleFilterSLAM
         
         function obj = updateParticles(obj, Z)
             % Z: rgb measurment data (3*1 matrix)
+            
+            w_sum = 0; % sum of all weights
             for ip = 1:obj.numP
                 % first time observe
                 if abs(obj.particles{ip}.rgbPos(1,1)) < 0.001
@@ -52,6 +54,7 @@ classdef ParticleFilterSLAM
                     w = obj.particles{ip}.computeWeight(Z, obj.R); 
                     obj.particles{ip}.w = w; % update the particle weight
                     obj.particles{ip} = obj.particles{ip}.updateLandmark(Z, obj.R); % update the landmark by EKF
+                    w_sum = w_sum + w;
                 end
             end
         end
