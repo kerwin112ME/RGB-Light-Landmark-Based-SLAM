@@ -46,7 +46,12 @@ classdef ParticleFilterSLAM
         
         function obj = updateParticles(obj, Z)
             % Z: rgb measurment data (3*1 matrix)
+<<<<<<< HEAD
 
+=======
+            
+            w_sum = 0; % sum of all weights
+>>>>>>> d697f5f8672ab25dce4aac0d69630ea6a7f9f513
             for ip = 1:obj.numP
                 % first time observe
                 if abs(obj.particles{ip}.rgbPos(1,1)) < 0.001
@@ -57,6 +62,7 @@ classdef ParticleFilterSLAM
                     w = obj.particles{ip}.computeWeight(Z, obj.R); 
                     obj.particles{ip}.w = w; % update the particle weight
                     obj.particles{ip} = obj.particles{ip}.updateLandmark(Z, obj.R); % update the landmark by EKF
+                    w_sum = w_sum + w;
                 end
             end
             
@@ -135,6 +141,7 @@ classdef ParticleFilterSLAM
                 newP.particles{j} = obj.particles{i};
                 j = j + 1;
             end
+<<<<<<< HEAD
         end
         
         
@@ -151,15 +158,28 @@ classdef ParticleFilterSLAM
             x = x / sumW;
             y = y / sumW;
             
+=======
+>>>>>>> d697f5f8672ab25dce4aac0d69630ea6a7f9f513
         end
+        
+        function [x,y] = computeLocation(obj)
+            x = 0;   % estimate x of the robot
+            y = 0;   % estimate y of the robot
+            sumW = 0;  % sum of the weight
+            for ip = 1 : obj.numP
+                x = x + obj.particles{ip}.x * obj.particles{ip}.w;
+                y = y + obj.particles{ip}.y * obj.particles{ip}.w;
+                sumW = sumW + obj.particles{ip}.w;
+            end
+            
+            x = x / sumW;
+            y = y / sumW;
+            
+            
+        end
+        
 
 
     end
 
 end
-
-
-        
-        
-            
-            
