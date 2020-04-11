@@ -37,8 +37,8 @@ classdef ParticleFilterSLAM
                 obj.particles{ip} = move(obj.particles{ip}, U(1), U(2));
                 
                 % Cyclic Truncate
-                obj.particles{ip}.x = mod(obj.particles{ip}.x, obj.mapL);
-                obj.particles{ip}.y = mod(obj.particles{ip}.y, obj.mapL);
+%                 obj.particles{ip}.x = mod(obj.particles{ip}.x, obj.mapL);
+%                 obj.particles{ip}.y = mod(obj.particles{ip}.y, obj.mapL);
             end
             
         end

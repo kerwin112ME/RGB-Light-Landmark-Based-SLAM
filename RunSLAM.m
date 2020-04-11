@@ -51,10 +51,6 @@ function PF = RunSLAM(Ut, RGBt, numP, lmY)
         
 
         % update the particles plot
-
-        [est_x, est_y] = PF.computeLocation();
-        plot(est_x,est_y,'o', 'color', '#FF00FF');
-        hold on
         
         scatter = zeros(2,PF.numP);
 
@@ -63,6 +59,10 @@ function PF = RunSLAM(Ut, RGBt, numP, lmY)
         end
         
         plot(scatter(1,:),scatter(2,:),'.','color','#D95319');
+        hold on
+        
+        [est_x, est_y] = PF.computeLocation();
+        plot(est_x,est_y,'o','MarkerSize', 9,'LineWidth',3 , 'color', '#FF00FF');
         hold on
 
         plot(PF.lmX_est(1),lmY(1),'pentagram','MarkerSize',9,'LineWidth',3,'color','#FF0000') % plot Red Lm
