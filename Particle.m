@@ -7,12 +7,16 @@ classdef Particle
         % landmarks
         rgbPos; % landmarks positions, dim:(3,2);  ex: [Rx Ry; Gx Gy; Bx By]
         rgbCov; % x positions' covariance, dim:(3,3); 
+        
+        singularPoint;
     end
     
     methods
         function obj = Particle(x_,y_,varargin)
             obj.x = x_;
             obj.y = y_;
+            
+            obj.singularPoint = 1e-6;
             
             if nargin == 3
                 obj.w = varargin{1};
@@ -31,11 +35,13 @@ classdef Particle
         function obj = addNewLm(obj, Z, lmY)
             % z: distance between the particle and the lm
             dX2 = Z.^2 - (lmY-obj.y).^2;
+            im = isempty(dX2(dX2<0)) == 0;
             dX2(dX2<0) = 0; 
+            
             
             lmX = obj.x + sqrt(dX2);
             obj.rgbPos(:,1) = lmX;
-            obj.rgbCov = diag([1,1,1]);
+            obj.rgbCov = (0.5+1.0*im)*diag([1,1,1]);
             
         end
         
@@ -44,7 +50,7 @@ classdef Particle
             P = obj.rgbCov; % covariance matrix
             [H,dx,dy] = obj.computeJacobian(); % H: jacobian of h(x_k)
             Qz = H*P*H' + R; % Qz: measurement covariance; R: measurement noise
-            if det(Qz) < 1e-6
+            if det(Qz) < obj.singularPoint
                 QzInv = pinv(Qz);
             else
                 QzInv = inv(Qz);
@@ -71,7 +77,7 @@ classdef Particle
             P = obj.rgbCov; % covariance matrix
             [H, dx, dy] = obj.computeJacobian(); % H: jacobian of h(x_k)
             Qz = H*P*H' + R; % Qz: measurement covariance; R: measurement noise
-            if det(Qz) < 1e-6
+            if det(Qz) < obj.singularPoint
                 % singular
                 w = 1.0;
                 return;
@@ -80,7 +86,7 @@ classdef Particle
             Z_hat = sqrt(dx.^2 + dy.^2);
             dZ = Z - Z_hat;
 
-            w = exp(-0.5*dZ'*(Qz\dZ)) / sqrt(2*pi*det(Qz));
+            w = exp(-0.5*dZ'*(Qz\dZ)) / (2*pi*sqrt(det(Qz)));
             
             return;
         end

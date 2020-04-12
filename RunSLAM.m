@@ -14,7 +14,7 @@ function PF = RunSLAM(Ut, RGBt, numP, lmY)
     
     %% initilize
     Q = zeros(3,3); % lm process noise 
-    R = diag([0.25,0.25,0.25]); % lm measurement noise
+    R = diag([0.1,0.1,0.1]); % lm measurement noise
 
     mapL = 6; % size of the map
     lmX_hat = [2.2;3.0;3.8]; % initial guess of the landmark x-positions
@@ -41,6 +41,9 @@ function PF = RunSLAM(Ut, RGBt, numP, lmY)
     hold off;
     
     %% start the SLAM
+    x_history = []; % record of all est_x
+    y_history = []; % record of all est_y
+    
     for t = 1:tspan
         
         PF = PF.predictParticles(Ut(:,t));
@@ -62,8 +65,13 @@ function PF = RunSLAM(Ut, RGBt, numP, lmY)
         hold on
         
         [est_x, est_y] = PF.computeLocation();
+        x_history(t) = est_x;
+        y_history(t) = est_y;
+       
         plot(est_x,est_y,'o','MarkerSize', 9,'LineWidth',3 , 'color', '#FF00FF');
         hold on
+        
+        plot(x_history, y_history, 'k-', 'LineWidth', 1.0);
 
         plot(PF.lmX_est(1),lmY(1),'pentagram','MarkerSize',9,'LineWidth',3,'color','#FF0000') % plot Red Lm
         plot(PF.lmX_est(2),lmY(2),'pentagram','MarkerSize',9,'LineWidth',3,'color','#00FF00') % plot Green Lm
@@ -72,7 +80,7 @@ function PF = RunSLAM(Ut, RGBt, numP, lmY)
         
         axis([0 mapL 0 mapL]);
         
-        pause(0.05);
+        pause(0.005);
         
     end
     
