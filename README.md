@@ -14,3 +14,9 @@ ParticleFilterSLAM.m:
   a class of the SLAM algorithm, including methods like predictParticles(), updateParticles(), resampling() ... etc.
 
 
+# Simulation
+Run Particle Filter SLAM with 
+  number of particles: 2000
+  process noise variacne: 0.03
+  measurement noise variance: 1
+  
