@@ -1,4 +1,4 @@
-function [PF,x_history,y_history] = RunSLAM(Ut, RGBt, numP, lmY)
+function [PF,x_history,y_history] = RunSLAM(Ut, RGBt, numP, lmY, simulation)
     % Input
     %   Ut: displacements at every time step. Dimension: 2*t
     %       ex, [dx; dy] = [0.1 0.15 0.11 ...; 0.02 0.1 0.08 ...]
@@ -14,10 +14,14 @@ function [PF,x_history,y_history] = RunSLAM(Ut, RGBt, numP, lmY)
     %   PF: the ParticleFilterSLAM object
     %   x_history: x estimate trajectory
     %   y_history: y estimate trajectory
+    %
+    % run command:
+    %   load('Input\test_input.mat')
+    %   PF = RunSLAM(Ut, Zt, 1500, lmY, 1)
     
     %% initilize
     Q = zeros(3,3); % lm process noise 
-    R = diag([0.1,0.1,0.1]); % lm measurement noise
+    R = diag([1,1,1]); % lm measurement noise
 
     mapL = 6; % size of the map
     lmX_hat = [2.2;3.0;3.8]; % initial guess of the landmark x-positions
@@ -47,6 +51,9 @@ function [PF,x_history,y_history] = RunSLAM(Ut, RGBt, numP, lmY)
     x_history = []; % record of all est_x
     y_history = []; % record of all est_y
     
+    x_true = [2.5];
+    y_true = [0];
+    
     rng(1);
     for t = 1:tspan
         
@@ -56,6 +63,8 @@ function [PF,x_history,y_history] = RunSLAM(Ut, RGBt, numP, lmY)
         
         PF = PF.resampling();
         
+        x_true(t+1) = x_true(t) + Ut(1,t);
+        y_true(t+1) = y_true(t) + Ut(2,t);
 
         % update the particles plot
         
@@ -74,7 +83,11 @@ function [PF,x_history,y_history] = RunSLAM(Ut, RGBt, numP, lmY)
        
         plot(est_x,est_y,'o','MarkerSize', 9,'LineWidth',3 , 'color', '#FF00FF');
         
-        plot(x_history, y_history, 'k-', 'LineWidth', 1.0);
+        pe = plot(x_history, y_history, 'k-', 'LineWidth', 1.0);
+        
+        if simulation
+            pt = plot(x_true, y_true, 'c-', 'LineWidth', 0.8);
+        end
 
         plot(PF.lmX_est(1),lmY(1),'pentagram','MarkerSize',9,'LineWidth',3,'color','#FF0000') % plot Red Lm
         plot(PF.lmX_est(2),lmY(2),'pentagram','MarkerSize',9,'LineWidth',3,'color','#00FF00') % plot Green Lm
@@ -82,6 +95,8 @@ function [PF,x_history,y_history] = RunSLAM(Ut, RGBt, numP, lmY)
         hold off;
         
         axis([0 mapL 0 mapL]);
+        grid on
+        legend([pe pt],'estimate traj','true traj')
         
         pause(0.005);
         
