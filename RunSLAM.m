@@ -1,4 +1,4 @@
-function PF = RunSLAM(Ut, RGBt, numP, lmY)
+function [PF,x_history,y_history] = RunSLAM(Ut, RGBt, numP, lmY)
     % Input
     %   Ut: displacements at every time step. Dimension: 2*t
     %       ex, [dx; dy] = [0.1 0.15 0.11 ...; 0.02 0.1 0.08 ...]
@@ -11,6 +11,9 @@ function PF = RunSLAM(Ut, RGBt, numP, lmY)
     %
     % Ouput
     %   dynamic plot of the particles
+    %   PF: the ParticleFilterSLAM object
+    %   x_history: x estimate trajectory
+    %   y_history: y estimate trajectory
     
     %% initilize
     Q = zeros(3,3); % lm process noise 
@@ -44,11 +47,12 @@ function PF = RunSLAM(Ut, RGBt, numP, lmY)
     x_history = []; % record of all est_x
     y_history = []; % record of all est_y
     
+    rng(1);
     for t = 1:tspan
         
         PF = PF.predictParticles(Ut(:,t));
         
-        PF = PF.updateParticles(RGBt(:,t));
+        PF = PF.updateParticles(Ut(:,t), RGBt(:,t));
         
         PF = PF.resampling();
         
@@ -69,7 +73,6 @@ function PF = RunSLAM(Ut, RGBt, numP, lmY)
         y_history(t) = est_y;
        
         plot(est_x,est_y,'o','MarkerSize', 9,'LineWidth',3 , 'color', '#FF00FF');
-        hold on
         
         plot(x_history, y_history, 'k-', 'LineWidth', 1.0);
 

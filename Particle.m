@@ -9,6 +9,7 @@ classdef Particle
         rgbCov; % x positions' covariance, dim:(3,3); 
         
         singularPoint;
+        numUpdates; % number of updates
     end
     
     methods
@@ -17,6 +18,7 @@ classdef Particle
             obj.y = y_;
             
             obj.singularPoint = 1e-6;
+            obj.numUpdates = 0;
             
             if nargin == 3
                 obj.w = varargin{1};
@@ -32,16 +34,24 @@ classdef Particle
             obj.y = obj.y + dy + (rand*0.03-0.015);
         end
         
-        function obj = addNewLm(obj, Z, lmY)
+        function obj = addNewLm(obj, U, Z, lmY)
             % z: distance between the particle and the lm
             dX2 = Z.^2 - (lmY-obj.y).^2;
-            im = isempty(dX2(dX2<0)) == 0;
+            im = dX2 < 0;
             dX2(dX2<0) = 0; 
             
+            if obj.numUpdates == 1
+                obj.rgbPos(:,1) = dX2;
+            else
+                lmX = obj.x + ...
+                    (-1 + 2*((U(1)>0)*ones(3,1) & dX2<obj.rgbPos(:,1) | (U(1)<0)*ones(3,1) & dX2>obj.rgbPos(:,1))).*sqrt(dX2);
+                obj.rgbPos(:,1) = lmX;
+                obj.rgbCov = diag((0.2+1.0*im));
+            end
             
-            lmX = obj.x + sqrt(dX2);
-            obj.rgbPos(:,1) = lmX;
-            obj.rgbCov = (0.5+1.0*im)*diag([1,1,1]);
+%             lmX = obj.x + sign*sqrt(dX2);
+%             obj.rgbPos(:,1) = lmX;
+%             obj.rgbCov = (0.5+1.0*im)*diag([1,1,1]);
             
         end
         
