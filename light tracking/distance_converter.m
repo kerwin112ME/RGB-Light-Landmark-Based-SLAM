@@ -14,7 +14,7 @@ repos_green=zeros(numberOfFrames,5);
 repos_blue=zeros(numberOfFrames,5);
 
 % Extract frames from video
-Folder = 'C:\Users\Kerwin\Desktop\課程講義\碩一\Robotic Perceptions\Light Intensity Landmark-Based SLAM\light tracking\Extracted_Frames';
+Folder = 'Extracted_Frames';
 
 
 for iFrame = 1:numberOfFrames
@@ -33,7 +33,7 @@ for Index = 1:length(all_frames)
     frames=all_frames(Index).name;
     
     % read the frame
-    Folder = 'C:\Users\Kerwin\Desktop\課程講義\碩一\Robotic Perceptions\Light Intensity Landmark-Based SLAM\light tracking\Extracted_Frames';
+    Folder = '\Extracted_Frames';
     FileName = fullfile(Folder, frames);
     %fprintf(1, 'Now reading %s\n', FileName);
     rgb = imread(FileName);
@@ -78,7 +78,7 @@ for Index = 1:length(all_frames)
     Bimg = rgb(:,cutGB:cutBR,:);
     Rimg = rgb(:,cutBR:end,:);
     
-    Folder = 'C:\Users\Kerwin\Desktop\課程講義\碩一\Robotic Perceptions\Light Intensity Landmark-Based SLAM\light tracking\Extracted_Frames\Seperated_Frames';
+    Folder = 'Extracted_Frames\Seperated_Frames';
     imwrite(Rimg, fullfile(Folder, sprintf('%06dr.png', Index)));
     imwrite(Gimg, fullfile(Folder, sprintf('%06dg.png', Index)));
     imwrite(Bimg, fullfile(Folder, sprintf('%06db.png', Index)));
@@ -87,14 +87,14 @@ end
 
 
 %% Computing the seperated frames
-Folder = 'C:\Users\Kerwin\Desktop\課程講義\碩一\Robotic Perceptions\Light Intensity Landmark-Based SLAM\light tracking\Extracted_Frames\Seperated_Frames';
+Folder = 'Extracted_Frames\Seperated_Frames';
 all_frames = dir(fullfile(Folder, '*.png'));
 
 for Index = 1:length(all_frames)
     frames=all_frames(Index).name;
     
     % read the frame
-    Folder = 'C:\Users\Kerwin\Desktop\課程講義\碩一\Robotic Perceptions\Light Intensity Landmark-Based SLAM\light tracking\Extracted_Frames\Seperated_Frames';
+    Folder = 'Extracted_Frames\Seperated_Frames';
     FileName = fullfile(Folder, frames);
     rgb = imread(FileName);
     
