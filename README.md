@@ -1,4 +1,4 @@
-# Light-Intensity-Landmark-Based-SLAM
+# RGB Light Landmark-Based SLAM
 MEEN 689 Term Project
 
 # About
