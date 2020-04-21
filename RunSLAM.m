@@ -21,10 +21,10 @@ function [PF,x_history,y_history] = RunSLAM(Ut, RGBt, numP, lmY, simulation)
     
     %% initilize
     Q = zeros(3,3); % lm process noise 
-    R = diag([1,1,1]); % lm measurement noise
+    R = 3*diag([1,1,1]); % lm measurement noise
 
     mapL = 6; % size of the map
-    lmX_hat = [2.2;3.0;3.8]; % initial guess of the landmark x-positions
+    lmX_hat = [3;4.5;1.5]; % initial guess of the landmark x-positions
     
     tspan = size(Ut,2);
     PF = ParticleFilterSLAM(numP, mapL, lmY, Q, R); % declare a ParticleFilterSLAM
@@ -96,7 +96,10 @@ function [PF,x_history,y_history] = RunSLAM(Ut, RGBt, numP, lmY, simulation)
         
         axis([0 mapL 0 mapL]);
         grid on
-        legend([pe pt],'estimate traj','true traj')
+        
+        if simulation
+            legend([pe pt],'estimate traj','true traj')
+        end
         
         pause(0.005);
         

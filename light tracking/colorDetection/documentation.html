@@ -1,0 +1,51 @@
+<html>
+<body>
+<div align="center">
+  <table width="100%" border="1">
+    <tr>
+      <td width="64%"><div align="center"><font size="5"><strong>Matlab Color Detection Software</strong></font></div></td>
+      <td width="36%"><font color="#003333" size="2"><strong>Theodoros Giannakopoulos </strong><br> 
+        Department of Informatics and Telecommunications <br> 
+        Univarsity of Athens, Greece <br>
+        <strong>website:</strong></font> <strong><font size="2"><a href="http://www.di.uoa.gr/~tyiannak" target="_blank">www.di.uoa.gr/~tyiannak</a></font></strong></td>
+    </tr>
+  </table>
+
+  <p align="justify"><font size="4"><strong><font size="5">Introduction</font></strong><br>
+  The provided Matlab functions demonstrate a simple method  for training and testing a color detection system. In general, a color  detection algorithm searches an image for pixels that have a specific color. In  this demo the <strong>HSV</strong> color space has been used, instead of the RGB space.  According to that model, <strong>H(ue)</strong> dimension represents the &quot;color&quot;,<strong> S(aturation)</strong>  dimension represents the dominance of that color and the <strong>V(alue)</strong> dimension  represents the brightness. Therefore, the color detection algorithm can search in  terms of color position and color &quot;purity&quot;, instead of searching for specific  RGB values. </font></p>
+  <table width="100%" border="0">
+    <tr>
+      <td width="51%"><p><font size="4">We have to note here, that in order to detect the desired  color, it is needed to define a <em><strong>tolerance</strong></em> in each HSV dimension. For example a  tolerance equal to 0.050 in the H dimension means that the algorithm will  detect pixels whose H value has a distance (from the desired value) less than  0.050. In Figure 1 an example of applying the color detection  algorithm is presented. In particular, we have selected to detect the color [0.50  0.60 0.70], with a tolerance of 0.10 in the H dimension and 0.50 in the S  dimension (no limitation in the V dimension). </font></p>
+      <p><font size="4">In that example  we suppose that we already know the  color we are looking for. In general that is not the case, though: we may want  to detect specific areas (e.g. skin color, sky color etc), without knowing the  color of those areas. For this purpose, a training step is needed, according to  which the user (manually) selects areas from known images. Then the average hsv  values of those areas is computed and finally used by the color detection  algoirith. In Figure 2, the method architecture is displayed. </font></p></td>
+      <td width="49%"><div align="center">
+        <p><img src="example.jpg" width="560" height="274" /></p>
+        <p><em>Figure 1</em></p>
+      </div></td>
+    </tr>
+  </table>
+  <p align="justify">&nbsp;</p>
+  <p align="center"><img src="method.jpg" width="537" height="509" /></p>
+  <p align="center"><em>Figure 2</em></p>
+  <hr>  
+  <p align="justify"><font size="4"><strong><font size="5">Training</font></strong><br />
+    For training the color detection scheme (i.e. for  calculating the average HSV values of your objects of interest), you just have  to run the getHSVColorFromDirectory() function on an known set of JPG images,  stored all in a specific directory. For exaple:</font></p>
+  <p><font size="5">HSV = getHSVColorFromDirectory('train');</font></p>
+  <p align="justify"><font size="4">This will open all JPG images in &quot;train&quot; folder and for each  image you will be prompt to <strong>select small (5x5) areas of interest (by left  clicking), as shown in Figure 3</strong>. When you have selected enough seeds (e.g. 10), right click anywhere in  the image, in order to continue with the next image. This process will continue  until all images are processed. The returned value (HSV) is a Mx3 matrix (M is  the number of images): each row of that matrix corresponds to the median hsv  value of the selected areas in the respective image. Therefore, by taking the  average, or median of that matrix, you get an estimation of the hsv value you  are searching for. Now, you are ready to go through the color detection  process.</font></p>
+  <p align="center"><img src="figure3.jpg" width="481" height="459" /><img src="figure3B.jpg" width="307" height="294" /></p>
+  <p align="center"><font size="4"><em>Figure 3</em></font><em>: The small areas represent the already selected (by sinlge right-clicks of the mouse) seeds. </em></p>
+  <p align="center"><em>For the specific example the returned HSV value is: [0.1312    0.6647    0.9285]</em>, which represents to the color on the right.</p>
+  <hr>
+  <p align="justify"><font size="4"><strong><font size="5">Color Detection:</font></strong><br />
+  After the average hsv value of the color of interest is  calculated (see above) simply call the colorDetectHSV() function as follow:</font></p>
+  <p><font size="5">colorDetectHSV('balls.jpg', median(HSV), [0.05]);</font></p>
+  <p align="justify"><font size="4">This will detect all pixels of balls.jpg whose H value has a  distance of less than 0.050 from the given color (2nd argument). If  you want to specify tolerance for all 3 dimensions simply write:</font></p>
+  <p><font size="5">colorDetectHSV('balls.jpg',  median(HSV), [0.05 0.5 0.50]);</font></p>
+  <p><font size="4"><em>NOTE: In general the  tolerance to the V dimension should be quite high, since this has nothing to do  with the color or the color purity (or use no tolerance, which means no limitation).</em></font><font size="4"><br />
+  </font></p>
+  <p><font size="5"></font></p>
+  <p>&nbsp;</p>
+  <p>&nbsp;</p>
+</div>
+</body>
+
+</html>

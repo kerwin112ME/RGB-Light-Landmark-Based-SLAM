@@ -24,8 +24,10 @@ classdef ParticleFilterSLAM
             lmPos = zeros(3,2);
             lmPos(:,2) = obj.lmY;
             for i = 1:numP_
+%                 obj.particles{i} = ...
+%                     Particle(mapL_*rand, mapL_*rand,1./numP_, lmPos, zeros(3,3));     
                 obj.particles{i} = ...
-                    Particle(mapL_*rand, mapL_*rand,1./numP_, lmPos, zeros(3,3));           
+                    Particle(1.5+3*rand, 0+1*rand,1./numP_, lmPos, zeros(3,3));         
             end
 
         end

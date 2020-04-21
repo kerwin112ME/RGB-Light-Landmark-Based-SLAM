@@ -5,7 +5,10 @@ classdef ekfSLAM
         X; % states: [x; y; Xr; Xg; Xb], dim:5*1
         Q; % motion noise variance, dim:2*2
         R; % measurement noise variance, dim:3*3
-        P; % covariance matrix, dim:5*5
+        
+        Xpred;
+        Ppred; % covariance matrix, dim:5*5
+        Pcorr;
                 
     end
     
@@ -13,8 +16,10 @@ classdef ekfSLAM
         function obj = ekfSLAM(mapL_, lmY_, X0, P0, Q_, R_)
             obj.mapL = mapL_;
             obj.lmY = lmY_;
+            obj.Xpred = X0;
             obj.X = X0;
-            obj.P = P0;
+            obj.Ppred = P0;
+            obj.Pcorr = P0;
             obj.Q = Q_;
             obj.R = R_;
         end
@@ -34,6 +39,8 @@ classdef ekfSLAM
             if nargout > 1
                 A = eye(2);
             end
+            
+            obj.Xpred = obj.X;
         end
         
         function obj = prediction(obj, u, simulation)
@@ -41,9 +48,9 @@ classdef ekfSLAM
             [obj, A] = obj.move(u, simulation);
             
             % predict the covariance
-            obj.P(1:2,1:2) = A*obj.P(1:2,1:2)*A' + obj.Q;
-            obj.P(1:2,3:5) = A*obj.P(1:2,3:5);
-            obj.P(3:5,1:2) = obj.P(1:2,3:5)';
+            obj.Ppred(1:2,1:2) = A*obj.Pcorr(1:2,1:2)*A' + obj.Q;
+            obj.Ppred(1:2,3:5) = A*obj.Pcorr(1:2,3:5);
+            obj.Ppred(3:5,1:2) = obj.Pcorr(1:2,3:5)';
             
         end
         
@@ -69,18 +76,18 @@ classdef ekfSLAM
         
         function obj = measUpdate(obj, z)
             [H,z_hat] = obj.measJacobian(); % measurment Jacobian
-            Qz = H*obj.P*H' + obj.R; % measurement covariance, dim: 3*3
+            Qz = H*obj.Ppred*H' + obj.R; % measurement covariance, dim: 3*3
             if det(Qz) < 1e-6
                 QzInv = pinv(Qz);
             else
                 QzInv = inv(Qz);
             end
             
-            K = obj.P*H'*QzInv; % Kalman gain
+            K = obj.Ppred*H'*QzInv; % Kalman gain
             
             % update states and covariance
             obj.X = obj.X + K*(z-z_hat);
-            obj.P = (eye(5) - K*H)*obj.P;
+            obj.Pcorr = (eye(5) - K*H)*obj.Ppred;
             
         end
               

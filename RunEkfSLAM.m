@@ -1,4 +1,4 @@
-function [ekf,x_history,y_history] = RunEkfSLAM(Ut, RGBt, simulation)
+function [ekf,traj_history,Xpred,Xcorr,Ppred,Pcorr,trueTraj] = RunEkfSLAM(Ut, RGBt, simulation)
     % Input
     %   Ut: displacements at every time step. Dimension: 2*t
     %       ex, [dx; dy] = [0.1 0.15 0.11 ...; 0.02 0.1 0.08 ...]
@@ -16,16 +16,16 @@ function [ekf,x_history,y_history] = RunEkfSLAM(Ut, RGBt, simulation)
     %
     % run command:
     %   load('Input\test_input.mat')
-    %   ekf = RunEkfSLAM(Ut, Zt, 1)
+    %   [ekf traj] = RunEkfSLAM(Ut, Zt, 1);
     
     %% initilize
     Q = diag([0.03,0.03]); % lm process noise 
-    R = diag([1,1,1]); % lm measurement noise
-    X0 = [2.5;0;1.5;3;4.5];
-    P0 = eye(5);
-    lmY = [3;3;3];
+    R = 3*diag([1,1,1]); % lm measurement noise
+    X0 = [2.0;0;4;2;3];
+    P0 = 1*eye(5);
+    lmY = [5;5;5];
 
-    mapL = 5; % size of the map
+    mapL = 5.5; % size of the map
     
     tspan = size(Ut,2);
     ekf = ekfSLAM(mapL, lmY, X0, P0, Q, R); % declare a ekfSLAM
@@ -51,6 +51,11 @@ function [ekf,x_history,y_history] = RunEkfSLAM(Ut, RGBt, simulation)
     x_true = [X0(1)];
     y_true = [X0(2)];
     
+    Ppred = zeros(5,5*tspan);
+    Pcorr = zeros(5,5*tspan);
+    Xpred = zeros(5,tspan);
+    Xcorr = zeros(5,tspan);
+    
     for t = 1:tspan
         
         ekf = ekf.prediction(Ut(:,t), simulation);
@@ -59,6 +64,12 @@ function [ekf,x_history,y_history] = RunEkfSLAM(Ut, RGBt, simulation)
         
         x_true(t+1) = x_true(t) + Ut(1,t);
         y_true(t+1) = y_true(t) + Ut(2,t);
+        
+        % record the states and covariance
+        Ppred(:,(t-1)*5+1 : t*5) = ekf.Ppred;
+        Pcorr(:,(t-1)*5+1 : t*5) = ekf.Pcorr;
+        Xpred(:,t) = ekf.Xpred;
+        Xcorr(:,t) = ekf.X;
 
         % update the particles plot  
         x_history(t+1) = ekf.X(1);
@@ -73,17 +84,22 @@ function [ekf,x_history,y_history] = RunEkfSLAM(Ut, RGBt, simulation)
             pt = plot(x_true, y_true, 'c-', 'LineWidth', 0.8);
         end
 
-        pr = plot(ekf.X(3),lmY(1),'pentagram','MarkerSize',9,'LineWidth',3,'color','#FF0000') % plot Red Lm
-        pg = plot(ekf.X(4),lmY(2),'pentagram','MarkerSize',9,'LineWidth',3,'color','#00FF00') % plot Green Lm
-        pb = plot(ekf.X(5),lmY(3),'pentagram','MarkerSize',9,'LineWidth',3,'color','#0000FF') % plot Blue Lm
+        pr = plot(ekf.X(3),lmY(1),'pentagram','MarkerSize',9,'LineWidth',3,'color','#FF0000'); % plot Red Lm
+        pg = plot(ekf.X(4),lmY(2),'pentagram','MarkerSize',9,'LineWidth',3,'color','#00FF00'); % plot Green Lm
+        pb = plot(ekf.X(5),lmY(3),'pentagram','MarkerSize',9,'LineWidth',3,'color','#0000FF'); % plot Blue Lm
         hold off;
         
-        legend([pe pt],'estimate traj','true traj')
+        if simulation
+            legend([pe pt],'estimate traj','true traj')
+        end
         axis([0 mapL 0 mapL]);
         
-        pause(0.1);
+        pause(0.05);
         
     end
+    
+    traj_history = [x_history;y_history];
+    trueTraj = [x_true;y_true];
     
 end
 
