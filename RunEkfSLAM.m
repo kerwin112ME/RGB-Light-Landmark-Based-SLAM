@@ -24,7 +24,11 @@ function [ekf,traj_history,Xpred,Xcorr,Ppred,Pcorr,trueTraj] = RunEkfSLAM(Ut, RG
     X0 = [2.0;0;4;2;3];
     P0 = 1*eye(5);
     lmY = [5;5;5];
-
+    if simulation
+        lmY = [3;3;3];
+        X0 = [2.5;0;1.5;3;4.5];
+    end
+        
     mapL = 5.5; % size of the map
     
     tspan = size(Ut,2);

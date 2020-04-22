@@ -21,10 +21,10 @@ function [PF,x_history,y_history] = RunSLAM(Ut, RGBt, numP, lmY, simulation)
     
     %% initilize
     Q = zeros(3,3); % lm process noise 
-    R = 3*diag([1,1,1]); % lm measurement noise
+    R = diag([1,1,1]); % lm measurement noise
 
     mapL = 6; % size of the map
-    lmX_hat = [3;4.5;1.5]; % initial guess of the landmark x-positions
+    lmX_hat = [1.5;3.0;4.5]; % initial guess of the landmark x-positions
     
     tspan = size(Ut,2);
     PF = ParticleFilterSLAM(numP, mapL, lmY, Q, R); % declare a ParticleFilterSLAM

@@ -30,8 +30,8 @@ classdef Particle
         end
         
         function obj = move(obj, dx, dy)
-            obj.x = obj.x + dx + (rand*0.08-0.04);
-            obj.y = obj.y + dy + (rand*0.08-0.04);
+            obj.x = obj.x + dx + (rand*0.06-0.03);
+            obj.y = obj.y + dy + (rand*0.06-0.03);
         end
         
         function obj = addNewLm(obj, U, Z, lmY)
