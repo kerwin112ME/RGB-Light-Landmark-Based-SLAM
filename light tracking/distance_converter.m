@@ -33,7 +33,7 @@ for Index = 1:length(all_frames)
     frames=all_frames(Index).name;
     
     % read the frame
-    Folder = '\Extracted_Frames';
+    Folder = 'Extracted_Frames';
     FileName = fullfile(Folder, frames);
     %fprintf(1, 'Now reading %s\n', FileName);
     rgb = imread(FileName);
