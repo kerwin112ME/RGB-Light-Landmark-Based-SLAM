@@ -2,7 +2,7 @@
 MEEN 689 Term Project
 
 # About
-A matlab version of landmark-based Fast SLAM using RGB light intensities as landmarks.
+A matlab version of landmark-based SLAM using RGB light as landmarks.
 
 # How To Run
 **\[Run a simulation\]:**  
@@ -19,13 +19,10 @@ load('Input\test_data0421.mat');
 ```
 
 # Detail
-Run RunSLAM.m function (input the motion data and measurement data) to run the whole project.
+Three light bults and a smartphone is everything we have.  
+We used our smartphone as the mobile robot, estimating its motion displacement by its accelerometer, GPS, gyroscope and magnetometer, and measuring the distance to three light bults by its RGB camera.  
 
-Particle.m:
-  a class of a single particle.
-  
-ParticleFilterSLAM.m:
-  a class of the SLAM algorithm, including methods like predictParticles(), updateParticles(), resampling() ... etc.
+We implemented two kinds of SLAM: EKF SLAM and Particle Filter SLAM. We set the y-positions of three landmarks as known parameters to simplify the problem. The simulation data and real world test data are provided in the "input" file. The simulation results are shown in the next section. The real world test results, however, are not accurate as the simulation results since we only have a smartphone as our sensor. 
 
 
 # Simulation
