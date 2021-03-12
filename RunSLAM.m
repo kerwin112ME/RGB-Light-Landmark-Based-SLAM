@@ -21,7 +21,7 @@ function [PF,x_history,y_history] = RunSLAM(Ut, RGBt, numP, lmY, simulation)
     
     %% initilize
     Q = zeros(3,3); % lm process noise 
-    R = diag([1,1,1]); % lm measurement noise
+    R = diag([1,1,1]); % lm measurement noisec;
 
     mapL = 6; % size of the map
     lmX_hat = [1.5;3.0;4.5]; % initial guess of the landmark x-positions
@@ -30,7 +30,7 @@ function [PF,x_history,y_history] = RunSLAM(Ut, RGBt, numP, lmY, simulation)
     PF = ParticleFilterSLAM(numP, mapL, lmY, Q, R); % declare a ParticleFilterSLAM
     
     % initialize the animation plot
-    figure;
+    h = figure;
     scatter = zeros(2,numP); % the x,y positions of all particles
     for ip = 1:numP
         scatter(:,ip) = [PF.particles{ip}.x; PF.particles{ip}.y];
@@ -55,6 +55,7 @@ function [PF,x_history,y_history] = RunSLAM(Ut, RGBt, numP, lmY, simulation)
     y_true = [0];
     
     rng(1);
+    filename = 'realWorldPF.gif';
     for t = 1:tspan
         
         PF = PF.predictParticles(Ut(:,t));
@@ -94,14 +95,27 @@ function [PF,x_history,y_history] = RunSLAM(Ut, RGBt, numP, lmY, simulation)
         plot(PF.lmX_est(3),lmY(3),'pentagram','MarkerSize',9,'LineWidth',3,'color','#0000FF') % plot Blue Lm
         hold off;
         
-        axis([0 mapL 0 mapL]);
+        % axis([0 mapL 0 mapL]);
+        axis equal;
         grid on
         
         if simulation
             legend([pe pt],'estimate traj','true traj')
         end
+        drawnow
+        % Capture the plot as an image 
+        frame = getframe(h);
+        im = frame2im(frame);
+        [imind,cm] = rgb2ind(im,256);
         
-        pause(0.005);
+        % Write to the GIF File 
+        if t == 1 
+            imwrite(imind,cm,filename,'gif', 'Loopcount',inf,'DelayTime',0.1); 
+        else 
+            imwrite(imind,cm,filename,'gif','WriteMode','append','DelayTime',0.1); 
+        end 
+        
+        %pause(0.005);
         
     end
     

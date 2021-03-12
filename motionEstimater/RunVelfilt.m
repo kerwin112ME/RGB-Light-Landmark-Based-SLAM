@@ -1,7 +1,7 @@
 %% Run position estimate
     clear all; clc;
     addpath('..\Input\test0420');
-    rotm = getrotm('accelerometer.csv', 'gyroscope.csv', 'magneticfield.csv');
+    rotm = getrotm('..\Input\test0420\accelerometer.csv', '..\Input\test0420\gyroscope.csv', '..\Input\test0420\magneticfield.csv');
     [vx_his, vy_his, traj] = velfilt('accelerometer.csv', 'gps.csv', rotm);
     
     dt = 0.05;

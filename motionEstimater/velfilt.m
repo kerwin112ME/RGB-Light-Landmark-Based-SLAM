@@ -1,12 +1,12 @@
 function [vx_his, vy_his, traj] = velfilt_new(accfile, gpsfile, rotm)
     %% Import file
 %     [biasx, biasy, biasz,gpsbias, station] = biascalc('accelerometer_still.csv','gps_still.csv');
-    acc = csvread('accelerometer.csv',1);
+    acc = csvread('..\Input\test0420\accelerometer.csv',1);
 %     acc = csvread(accfile,1);
     acc = acc(1:160,2:4).';
     acc(2,:) = acc(2,:);
 
-    gps = csvread('gps.csv',1);
+    gps = csvread('..\Input\test0420\gps.csv',1);
     gps = gps(:,6).';%-gpsbias;
     
     tq = linspace(1,size(gps,2),size(acc,2)); % interpolation for gps
@@ -35,7 +35,7 @@ function [vx_his, vy_his, traj] = velfilt_new(accfile, gpsfile, rotm)
     R = 0.5;
     acci = [];
     for i = 1:size(acc,2);
-        acci(:,i) = rotm(:,:,4)*acc(:,i);
+        acci(:,i) = rotm(:,:,i)*acc(:,i);
         %acci(:,i) = acc(:,i);
 
         [V, P] = prediction([vx_his(i);vy_his(i)], [acci(1,i);-acci(3,i)], P, Q); % prediction

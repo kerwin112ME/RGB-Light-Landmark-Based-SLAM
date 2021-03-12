@@ -35,7 +35,7 @@ function [ekf,traj_history,Xpred,Xcorr,Ppred,Pcorr,trueTraj] = RunEkfSLAM(Ut, RG
     ekf = ekfSLAM(mapL, lmY, X0, P0, Q, R); % declare a ekfSLAM
     
     % initialize the animation plot
-    figure;
+    h = figure;
     title('EKF SLAM')
     plot(X0(1),X0(2),'o','MarkerSize', 9,'LineWidth',3 , 'color', '#FF00FF');
     hold on;
@@ -60,6 +60,7 @@ function [ekf,traj_history,Xpred,Xcorr,Ppred,Pcorr,trueTraj] = RunEkfSLAM(Ut, RG
     Xpred = zeros(5,tspan);
     Xcorr = zeros(5,tspan);
     
+    filename = 'EKF_SLAM_simulation.gif';
     for t = 1:tspan
         
         ekf = ekf.prediction(Ut(:,t), simulation);
@@ -97,8 +98,21 @@ function [ekf,traj_history,Xpred,Xcorr,Ppred,Pcorr,trueTraj] = RunEkfSLAM(Ut, RG
             legend([pe pt],'estimate traj','true traj')
         end
         axis([0 mapL 0 mapL]);
+        drawnow
         
-        pause(0.05);
+        % Capture the plot as an image 
+        frame = getframe(h);
+        im = frame2im(frame);
+        [imind,cm] = rgb2ind(im,256);
+        
+        % Write to the GIF File 
+        if t == 1 
+            imwrite(imind,cm,filename,'gif', 'Loopcount',inf,'DelayTime',0.1); 
+        else 
+            imwrite(imind,cm,filename,'gif','WriteMode','append','DelayTime',0.1); 
+        end 
+        
+        %pause(0.05);
         
     end
     

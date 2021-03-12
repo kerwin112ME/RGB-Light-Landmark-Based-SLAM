@@ -54,7 +54,7 @@ classdef ParticleFilterSLAM
 %                     obj.particles{ip} = obj.particles{ip}.addNewLm(Z, obj.lmY);
 
                 % first and second time observe
-                if obj.particles{ip}.numUpdates <= 2
+                if obj.particles{ip}.numUpdates <= 1
                     obj.particles{ip} = obj.particles{ip}.addNewLm(U, Z, obj.lmY);
 
                 % non first time observe

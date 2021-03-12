@@ -41,11 +41,7 @@ classdef Particle
             dX2(dX2<0) = 0; 
             
             if obj.numUpdates == 1
-                obj.rgbPos(:,1) = dX2;
-            else
-                lmX = obj.x + ...
-                    (-1 + 2*((U(1)>0)*ones(3,1) & dX2<obj.rgbPos(:,1) | (U(1)<0)*ones(3,1) & dX2>obj.rgbPos(:,1))).*sqrt(dX2);
-                obj.rgbPos(:,1) = lmX;
+                obj.rgbPos(:,1) = sqrt(dX2);
                 obj.rgbCov = diag((0.2+1.0*im));
             end
             
