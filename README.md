@@ -30,7 +30,7 @@ Run Particle Filter SLAM with
   number of particles: 2000  
   process noise variacne: 0.03  
   measurement noise variance: 1  
-  ![](Plots/PF_SLAM_simulation.gif)  
+  ![](Plots/PF_simulation.gif)  
   
 Run EKF SLAM with  
   process noise variacne: 0.03  
